@@ -84,17 +84,11 @@ public class Login extends WindowAdapter implements ActionListener
 			// HACER CONSULTA
 			int respuesta = gestionBD.comprobarCredenciales(usuarioDado, claveDada);
 			gestionBD.desconectar(conexion);
-			if (respuesta==0)
+			if (respuesta == 0 || respuesta == 1 || respuesta == 2)
 			{
-				System.out.println("Tipo 0:Administrador");
+				System.out.println("Tipo" + respuesta + ":Administrador");
 				ventana.dispose();
-				new Principal(respuesta);
-			}
-			else if(respuesta == 1)
-			{
-				System.out.println("Tipo 1:Básico");
-				ventana.dispose();
-				new Principal(respuesta);
+				new StudiumMenu(respuesta);
 			}
 			else
 			{

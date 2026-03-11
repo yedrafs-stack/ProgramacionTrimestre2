@@ -17,7 +17,7 @@ import java.sql.Statement;
 public class Consulta1 extends WindowAdapter implements ActionListener
 {
 	Frame ventana = new Frame("ConsultaCiclo");
-	TextArea txaEmpleados = new TextArea(7,24);
+	TextArea txaEmpleados = new TextArea(7, 24);
 	Button btnActualizar = new Button("Actualizar");
 
 	String driver = "com.mysql.cj.jdbc.Driver";
@@ -27,17 +27,17 @@ public class Consulta1 extends WindowAdapter implements ActionListener
 	String sentenciaSQL = "SELECT * FROM ciclos";
 	Connection connection = null;
 	Statement statement = null;
-	ResultSet rs = null; //PARA LOS SELECT
+	ResultSet rs = null; // PARA LOS SELECT
 
 	public Consulta1()
 	{
 		ventana.setLayout(new FlowLayout());
-		ventana.setSize(300,240);
+		ventana.setSize(300, 240);
 		ventana.addWindowListener(this);
 		btnActualizar.addActionListener(this);
 		ventana.add(txaEmpleados);
 		ventana.add(btnActualizar);
-		ventana.setResizable(true);		
+		ventana.setResizable(true);
 		ventana.setLocationRelativeTo(null);
 		ventana.setVisible(true);
 	}
@@ -52,44 +52,39 @@ public class Consulta1 extends WindowAdapter implements ActionListener
 	{
 		try
 		{
-			//CARGAR LOS DRIVERS
+			// CARGAR LOS DRIVERS
 			Class.forName(driver);
-			//ESTABLECER LA CONEXION
+			// ESTABLECER LA CONEXION
 			connection = DriverManager.getConnection(url, login, password);
 			System.out.println("Conexión establecida");
-			//CREAR LA SENTENCIA DE CONSULTA O DE ALTA O DE BAJA O DE ACTU...
+			// CREAR LA SENTENCIA DE CONSULTA O DE ALTA O DE BAJA O DE ACTU...
 			statement = connection.createStatement();
-			//EJECUTAR LA INSTRUCCION SQL
-			rs = statement.executeQuery(sentenciaSQL);//SELECT * FROM -;
-			//SACAR INFORMACIÓN, METER DATOS, BORRAR DATOS, ACTUALIZAR
-			//MOSTRAR EN LA CONSOLA
-			while(rs.next())
+			// EJECUTAR LA INSTRUCCION SQL
+			rs = statement.executeQuery(sentenciaSQL);// SELECT * FROM -;
+			// SACAR INFORMACIÓN, METER DATOS, BORRAR DATOS, ACTUALIZAR
+			// MOSTRAR EN LA CONSOLA
+			while (rs.next())
 			{
-				txaEmpleados.append(rs.getInt("idCiclo")+ 
-						"-"+rs.getString("nombreCiclo")+
-						"-" +rs.getString("descripcionCiclo")+"\n");
+				txaEmpleados.append(rs.getInt("idCiclo") + "-" + rs.getString("nombreCiclo") + "-"
+						+ rs.getString("descripcionCiclo") + "\n");
 			}
-			
-		}
-		catch(ClassNotFoundException  cnfe)
+
+		} catch (ClassNotFoundException cnfe)
 		{
-			System.err.println("Error de driver"+cnfe.getMessage());
-		}
-		catch(SQLException se)
+			System.err.println("Error de driver" + cnfe.getMessage());
+		} catch (SQLException se)
 		{
 			System.err.println("Error de conexión: url, usuaro o clave");
-		}
-		finally 
+		} finally
 		{
 			try
 			{
-				//DESCONECTAR DE LA BD
-				if(connection!=null)
+				// DESCONECTAR DE LA BD
+				if (connection != null)
 				{
 					connection.close();
 				}
-			}
-			catch(SQLException evento)
+			} catch (SQLException evento)
 			{
 				System.out.println("Error al cerrar conexión");
 			}
@@ -97,58 +92,52 @@ public class Consulta1 extends WindowAdapter implements ActionListener
 		}
 		try
 		{
-			//CARGAR LOS DRIVERS
+			// CARGAR LOS DRIVERS
 			Class.forName(driver);
-			//ESTABLECER LA CONEXION
+			// ESTABLECER LA CONEXION
 			connection = DriverManager.getConnection(url, login, password);
 			System.out.println("Conexión establecida");
-			//CREAR LA SENTENCIA DE CONSULTA O DE ALTA O DE BAJA O DE ACTU...
+			// CREAR LA SENTENCIA DE CONSULTA O DE ALTA O DE BAJA O DE ACTU...
 			statement = connection.createStatement();
-			//EJECUTAR LA INSTRUCCION SQL
-			rs = statement.executeQuery(sentenciaSQL);//SELECT * FROM -;
-			//SACAR INFORMACIÓN, METER DATOS, BORRAR DATOS, ACTUALIZAR
-			//MOSTRAR EN LA CONSOLA
-			while(rs.next())
+			// EJECUTAR LA INSTRUCCION SQL
+			rs = statement.executeQuery(sentenciaSQL);// SELECT * FROM -;
+			// SACAR INFORMACIÓN, METER DATOS, BORRAR DATOS, ACTUALIZAR
+			// MOSTRAR EN LA CONSOLA
+			while (rs.next())
 			{
-				txaEmpleados.append(rs.getInt("idCiclo")+ 
-						"-"+rs.getString("nombreCiclo")+
-						"-" +rs.getString("descripcionCiclo")+"\n");
+				txaEmpleados.append(rs.getInt("idCiclo") + "-" + rs.getString("nombreCiclo") + "-"
+						+ rs.getString("descripcionCiclo") + "\n");
 			}
-			
-		}
-		catch(ClassNotFoundException  cnfe)
+
+		} catch (ClassNotFoundException cnfe)
 		{
 			System.err.println("Error de driver");
-		}
-		catch(SQLException se)
+		} catch (SQLException se)
 		{
 			System.err.println("Error de conexión: url, usuaro o clave");
-		}
-		finally 
+		} finally
 		{
 			try
 			{
-				//DESCONECTAR DE LA BD
-				if(connection!=null)
+				// DESCONECTAR DE LA BD
+				if (connection != null)
 				{
 					connection.close();
 				}
-			}
-			catch(SQLException evento)
+			} catch (SQLException evento)
 			{
 				System.out.println("Error al cerrar conexión");
 			}
 			System.out.println("Fin del programa");
-		}		
+		}
 	}
-	 @Override
-		public void windowClosing(WindowEvent e)
-		 {
-			 // Salir
-			 System.exit(0);
 
+	@Override
+	public void windowClosing(WindowEvent e)
+	{
+		// Salir
+		System.exit(0);
 
-		 }
-	
+	}
 
 }

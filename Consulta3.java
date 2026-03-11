@@ -17,7 +17,7 @@ import java.sql.Statement;
 public class Consulta3 extends WindowAdapter implements ActionListener
 {
 	Frame ventana = new Frame("ConsultaAsignatura");
-	TextArea txaEmpleados = new TextArea(7,24);
+	TextArea txaConsulta = new TextArea(7,24);
 	Button btnActualizar = new Button("Actualizar");
 
 	String driver = "com.mysql.cj.jdbc.Driver";
@@ -35,7 +35,7 @@ public class Consulta3 extends WindowAdapter implements ActionListener
 		ventana.setSize(300,240);
 		ventana.addWindowListener(this);
 		btnActualizar.addActionListener(this);
-		ventana.add(txaEmpleados);
+		ventana.add(txaConsulta);
 		ventana.add(btnActualizar);
 		ventana.setResizable(true);		
 		ventana.setLocationRelativeTo(null);
@@ -65,7 +65,7 @@ public class Consulta3 extends WindowAdapter implements ActionListener
 			//MOSTRAR EN LA CONSOLA
 			while(rs.next())
 			{
-				txaEmpleados.append(rs.getInt("idAsignatura")+ 
+				txaConsulta.append(rs.getInt("idAsignatura")+ 
 						"-"+rs.getString("nombreAsignatura")+
 						"-" +rs.getString("descripcionAsignatura")+
 						"-" +rs.getString("idCicloFK")+"\n");
@@ -111,7 +111,7 @@ public class Consulta3 extends WindowAdapter implements ActionListener
 			//MOSTRAR EN LA CONSOLA
 			while(rs.next())
 			{
-				txaEmpleados.append(rs.getInt("idAsignatura")+ 
+				txaConsulta.append(rs.getInt("idAsignatura")+ 
 						"-"+rs.getString("nombreAsignatura")+
 						"-" +rs.getString("descripcionAsignatura")+
 						"-" +rs.getString("idCicloFK")+"\n");

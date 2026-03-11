@@ -17,8 +17,7 @@ public class Programacion2
 	
 	Connection connection = null;
 	Statement statement = null;
-	ResultSet rs = null; 
-	
+	ResultSet rs = null;
 	public Connection conectar()
 	{
 		try
@@ -60,29 +59,32 @@ public class Programacion2
 	}
 	public int comprobarCredenciales(String nombreUsuario, String claveUsuario)
 	{
-		sentenciaSQL = "SELECT * FROM usuario WHERE nombreUsuario = ? AND claveUsuario = SHA2(?,256)";
-		try
-		{
-			PreparedStatement ps = connection.prepareStatement(sentenciaSQL);
-			ps.setString(1, nombreUsuario);
-			ps.setString(2, claveUsuario);
-			rs = ps.executeQuery();
-			if(rs.next())
-			{
-				return(rs.getInt("tipoUsuario"));
-			}
-			else
-			{
-				return -1; //CREDENCIALES INCORRECTAS
-			}
-
-		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-			return -1;
-		}
-		
+		int resultado = -1;
+	    sentenciaSQL = "SELECT tipoUsuario FROM usuario WHERE nombreUsuario = ? AND claveUsuario = SHA2(?,256)";
+	    try
+	    {
+	        // DEBUG: Imprime para ver qué recibe Java
+	        System.out.println("Intentando login con: [" + nombreUsuario + "] y [" + claveUsuario + "]");
+	        
+	        PreparedStatement ps = connection.prepareStatement(sentenciaSQL);
+	        ps.setString(1, nombreUsuario);
+	        ps.setString(2, claveUsuario);
+	        rs = ps.executeQuery();
+	        
+	        if(rs.next())
+	        {
+	            resultado = rs.getInt("tipoUsuario");
+	            System.out.println("¡Usuario encontrado! Tipo: " + resultado);
+	        } else {
+	            System.out.println("No se encontró ningún registro coincidente.");
+	        }
+	    }
+	    catch (SQLException e)
+	    {
+	        System.err.println("Error en la consulta SQL");
+	        e.printStackTrace();
+	    }
+	    return resultado;
 	}
 	
 	public static void main(String[] args)
