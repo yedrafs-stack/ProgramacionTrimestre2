@@ -28,7 +28,6 @@ public class Modificacion1 extends WindowAdapter implements ActionListener
 	TextField txtNombre = new TextField(10);
 	Label lblDescripcion = new Label("Descripción:");
 	TextField txtDescripcion = new TextField(10);
-	Choice choDepartamentos = new Choice();
 	Button btnAceptar = new Button("Aceptar");
 	Button btnLimpiar = new Button("Limpiar");
 	Dialog dlgMensaje = new Dialog(ventana, "Respuesta", true);
@@ -38,7 +37,6 @@ public class Modificacion1 extends WindowAdapter implements ActionListener
 	String usuario = "programacion";
 	String password = "Studium2025#";
 	String sentenciaSQLCiclos = "SELECT * FROM ciclos";
-	String sentenciaSQLDepartamentos = "SELECT * FROM departamentos";
 	String sentenciaSQL = "";
 	String idCiclo = "";
 	
@@ -55,7 +53,7 @@ public class Modificacion1 extends WindowAdapter implements ActionListener
 		btnEditar.addActionListener(this);
 		
 		// Rellenar el Choice
-		rellenarChoiceEmpleados();
+		rellenarChoiceCiclo();
 
 		ventana.add(choCiclo);
 		ventana.add(btnEditar);
@@ -79,8 +77,6 @@ public class Modificacion1 extends WindowAdapter implements ActionListener
 		dlgEdicion.add(txtDescripcion);
 		
 
-		rellenarChoiceDepartamentos();
-		dlgEdicion.add(choDepartamentos);
 		dlgEdicion.add(btnAceptar);
 		dlgEdicion.add(btnLimpiar);
 		dlgEdicion.setResizable(false);
@@ -88,55 +84,8 @@ public class Modificacion1 extends WindowAdapter implements ActionListener
 		ventana.setVisible(true);
 
 	}
-	private void rellenarChoiceDepartamentos()
-	{
-		// Conectar a una BD
-		try
-		{
-			// Cargar los drivers
-			Class.forName(driver);
-			// Establecer la conexión
-			connection = DriverManager.getConnection(url, usuario, password);
-			System.out.println("Conexión establecida");
-			// Crear la sentencia de consulta o de alta o de baja o de actu...
-			statement = connection.createStatement();
-			// Ejecutar la instrucción SQL
-			rs = statement.executeQuery(sentenciaSQLDepartamentos);
-			// Sacar información, meter datos, borrar datos, actualizar
-			choDepartamentos.add("Seleccionar un departamento...");
-			while (rs.next())
-			{
-				choDepartamentos.add(rs.getInt("idCiclo") +
-						" " + rs.getString("nombreCiclo") +
-						" " + rs.getString("descripcionCiclo"));
-			}
-		}
-		catch (ClassNotFoundException cnfe)
-		{
-			System.err.println("Error de driver");
-		}
-		catch (SQLException se)
-		{
-			System.err.println("Error de conexión: url, usuario o clave");
-		}
-		finally
-		{
-			try
-			{
-				// Desconectar de la BD
-				if (connection != null)
-				{
-					connection.close();
-				}
-			}
-			catch (SQLException e)
-			{
-				System.err.println("Error al cerrar conexión");
-			}
-			System.out.println("Fin del programa");
-		}
-	}
-	private void rellenarChoiceEmpleados()
+	
+	private void rellenarChoiceCiclo()
 	{
 		// Conectar a una BD
 		try
@@ -184,10 +133,6 @@ public class Modificacion1 extends WindowAdapter implements ActionListener
 			System.out.println("Fin del programa");
 		}
 	}
-	public static void main(String[] args)
-	{
-		new Modificacion1();
-	}
 	@Override
 	public void windowClosing(WindowEvent e)
 	{
@@ -204,7 +149,7 @@ public class Modificacion1 extends WindowAdapter implements ActionListener
 		else
 		{
 			// Salir
-			System.exit(0);
+			ventana.setVisible(false);
 		}
 	}
 	@Override
@@ -283,6 +228,7 @@ public class Modificacion1 extends WindowAdapter implements ActionListener
 				statement = connection.createStatement();
 				// Ejecutar la instrucción SQL
 				statement.executeUpdate(sentenciaSQL);
+				FicheroLog.Log("Modificación realizada: " + sentenciaSQL);
 				lblMensaje.setText("Modificación correcta");
 				dlgMensaje.setVisible(true);
 			}

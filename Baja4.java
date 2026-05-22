@@ -17,10 +17,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class Baja2 extends WindowAdapter implements ActionListener
+public class Baja4 extends WindowAdapter implements ActionListener
 {
-	Frame ventana = new Frame("BajaAlumnos");
-	Choice choAlumno= new Choice();
+	Frame ventana = new Frame("BajaMatricula");
+	Choice choMatricula = new Choice();
 	Button btnEliminar = new Button("Eliminar");
 	Dialog dlgConfirmar = new Dialog(ventana, "Confirmación", true);
 	Label lblConfirmar = new Label("¿Estás segur@ de borrar XXXXXXXXXXXX?");
@@ -37,20 +37,20 @@ public class Baja2 extends WindowAdapter implements ActionListener
 	String usuario = "programacion";
 	String password = "Studium2025#";
 	//HACER UN ALTA
-	String sentenciaSQL = "SELECT * FROM alumnos";
+	String sentenciaSQL = "SELECT * FROM matricular";
 	Connection connection = null;
 	Statement statement = null;
 	ResultSet rs = null; // Para los SELECT
 	
-	public Baja2()
+	public Baja4()
 	{
 		ventana.setLayout(new FlowLayout());
 		ventana.setSize(250, 100);
 		ventana.addWindowListener(this);
 		btnEliminar.addActionListener(this);
 		// Rellenar el Choice
-		rellenarChoice();
-		ventana.add(choAlumno);
+		rellenarMatricula();
+		ventana.add(choMatricula);
 
 		ventana.add(btnEliminar);
 		ventana.setResizable(false);
@@ -75,8 +75,8 @@ public class Baja2 extends WindowAdapter implements ActionListener
 		dlgMensaje.add(lblMensaje);
 		ventana.setVisible(true);
 	}
+	private void rellenarMatricula()
 
-	private void rellenarChoice()
 	{
 		// Conectar a una BD
 		try
@@ -91,13 +91,14 @@ public class Baja2 extends WindowAdapter implements ActionListener
 			// Ejecutar la instrucción SQL
 			rs = statement.executeQuery(sentenciaSQL);
 			// Sacar información, meter datos, borrar datos, actualizar
-			choAlumno.add("Elegir Alumno");
+			choMatricula.add("Elegir Matricula");
 			while (rs.next())
 			{
-				choAlumno.add(rs.getInt("idAlumno") +
-						" " + rs.getString("nombreAlumno") +
-						" " + rs.getString("apellidosAlumno")+
-						" " + rs.getString("dniAlumno"));
+				choMatricula.add(rs.getInt("idMatricula") +
+						" " + rs.getString("fechaMatricula") +
+						" " + rs.getString("notaMatricula")+
+						" " + rs.getString("idAsignaturaFK")+
+						" " + rs.getString("idAlumnoFK"));
 			}
 		}
 		catch (ClassNotFoundException cnfe)
@@ -131,13 +132,13 @@ public class Baja2 extends WindowAdapter implements ActionListener
 		if (dlgConfirmar.isActive())
 		{
 			dlgConfirmar.setVisible(false);
-			new Baja2();
+			new Baja4();
 		}
 		else if (dlgMensaje.isActive())
 		{
 			dlgMensaje.setVisible(false);
 			dlgConfirmar.setVisible(false);
-			new Baja2();
+			new Baja4();
 		}
 		else
 		{
@@ -151,16 +152,17 @@ public class Baja2 extends WindowAdapter implements ActionListener
 		if (evento.getSource().equals(btnEliminar))
 
 		{
-			if (choAlumno.getSelectedIndex() != 0)
+			if (choMatricula.getSelectedIndex() != 0)
 
 			{
 				// Mostrar el diálogo de confirmación
-				lblConfirmar.setText("¿Estás segur@ de borrar " + choAlumno.getSelectedItem() + "?");
+				lblConfirmar.setText("¿Estás segur@ de borrar " + choMatricula.getSelectedItem() + "?");
 				dlgConfirmar.setVisible(true);
+				ventana.dispose();
 			}
 			else
 			{
-				choAlumno.requestFocus();
+				choMatricula.requestFocus();
 			}
 		}
 		else if (evento.getSource().equals(btnSi))
@@ -178,11 +180,11 @@ public class Baja2 extends WindowAdapter implements ActionListener
 				// Crear la sentencia de consulta o de alta o de baja o de actu...
 				statement = connection.createStatement();
 				// Ejecutar la instrucción SQL
-				sentenciaSQL = "DELETE FROM alumnos WHERE idAlumno = "
-						+ choAlumno.getSelectedItem().split(" ")[0];
+				sentenciaSQL = "DELETE FROM matricular WHERE idMatricula = "
+						+ choMatricula.getSelectedItem().split(" ")[0];
 				statement.executeUpdate(sentenciaSQL);
 				FicheroLog.Log("Baja realizada: " + sentenciaSQL);
-				rellenarChoice();
+				rellenarMatricula();
 				// Baja correcta
 				lblMensaje.setText("Baja correcta");
 				dlgMensaje.setVisible(true);
@@ -218,9 +220,10 @@ public class Baja2 extends WindowAdapter implements ActionListener
 		{
 			// Ocultar el diálogo de confirmación
 			dlgConfirmar.setVisible(false);
-			new Baja2();
+			new Baja4();
 
 		}
 	}
 
 }
+

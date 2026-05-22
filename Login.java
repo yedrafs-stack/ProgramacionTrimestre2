@@ -16,6 +16,8 @@ import java.sql.Connection;
 
 public class Login extends WindowAdapter implements ActionListener
 {
+	//admin:5678
+	//basico.1234
 	Frame ventana = new Frame ("Login");
 	Label lblUsuario= new Label ("Usuario");
 	Label lblClave= new Label ("Clave");
@@ -94,6 +96,10 @@ public class Login extends WindowAdapter implements ActionListener
 			{
 				dlgDialogo.setVisible(true);
 			}
+			FicheroLog.usuario =txtUsuario.getText(); 
+			FicheroLog.Log("[Acesso al Sistema]");
+
+
 			// SELECT * FROM USUARIO WHERE NOMBREUSUARIO = NOMBREDADO AND CLAVEUSUARIO = CLAVEDADA
 			// OBTENGA 0 RESULTADOS ==> CREDENCIALES INCORRECTAS
 			// OBTENGA 1 RESULTADO ==> CREDENCIALES CORRECTAS

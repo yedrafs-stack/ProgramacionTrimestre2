@@ -16,20 +16,22 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 
-public class Modificacion2 extends WindowAdapter implements ActionListener
+import java.text.ParseException;
+
+public class Modificacion4 extends WindowAdapter implements ActionListener
 {
 	Frame ventana = new Frame("Modificación");
-	Choice choAlumno = new Choice();
 	Button btnEditar = new Button("Editar");
 	Dialog dlgEdicion = new Dialog(ventana, "Editando...", true);
-	Label lblAlumno = new Label("# # # Editando el Alumno X # # #");
-	Label lblNombre = new Label("Nombre:");
-	TextField txtNombre = new TextField(10);
-	Label lblApellidos = new Label("Apellidos:");
-	TextField txtApellidos = new TextField(10);
-	Label lblDni= new Label("DNI:");
-	TextField txtDni = new TextField(10);	Button btnAceptar = new Button("Aceptar");
+	Label lblMatricula = new Label("# # # Editando la Matricula X # # #");
+	Label lblFecha = new Label("Fecha (dd/MM/yyyy):"); 
+	TextField txtFecha = new TextField(10);
+	Label lblNota = new Label("Nota:");
+	TextField txtNota = new TextField(10);
+	Choice choMatricula = new Choice();
+	Button btnAceptar = new Button("Aceptar");
 	Button btnLimpiar = new Button("Limpiar");
 	Dialog dlgMensaje = new Dialog(ventana, "Respuesta", true);
 	Label lblMensaje = new Label("Error en Baja");
@@ -37,16 +39,16 @@ public class Modificacion2 extends WindowAdapter implements ActionListener
 	String url = "jdbc:mysql://localhost:3306/programacion2";
 	String usuario = "programacion";
 	String password = "Studium2025#";
-	String sentenciaSQLAlumno = "SELECT * FROM alumnos";
+	String sentenciaSQLMatricula = "SELECT * FROM matricular";
 	String sentenciaSQL = "";
-	String idAlumno = "";
+	String idMatricula = "";
 	
 	
 	Connection connection = null;
 	Statement statement = null;
 	ResultSet rs = null; // Para los SELECT
-
-	public Modificacion2()
+	
+	public Modificacion4()
 	{
 		ventana.setLayout(new FlowLayout());
 		ventana.setSize(250, 100);
@@ -54,11 +56,11 @@ public class Modificacion2 extends WindowAdapter implements ActionListener
 		btnEditar.addActionListener(this);
 		
 		// Rellenar el Choice
-		rellenarChoiceAlumno();
+		rellenarMatricula();
 
-		ventana.add(choAlumno);
+		ventana.add(choMatricula);
 		ventana.add(btnEditar);
-		ventana.setResizable(false);
+		ventana.setResizable(true);
 		ventana.setLocationRelativeTo(null);
 		dlgMensaje.setLayout(new FlowLayout());
 		dlgMensaje.setSize(50, 80);
@@ -67,27 +69,25 @@ public class Modificacion2 extends WindowAdapter implements ActionListener
 		dlgMensaje.setLocationRelativeTo(null);
 		dlgMensaje.add(lblMensaje);
 		dlgEdicion.setLayout(new FlowLayout());
-		dlgEdicion.setSize(200, 250);
+		dlgEdicion.setSize(350, 200);
 		dlgEdicion.addWindowListener(this);
 		btnAceptar.addActionListener(this);
 		btnLimpiar.addActionListener(this);
-		dlgEdicion.add(lblAlumno);
-		dlgEdicion.add(lblNombre);
-		dlgEdicion.add(txtNombre);
-		dlgEdicion.add(lblApellidos);
-		dlgEdicion.add(txtApellidos);
-		dlgEdicion.add(lblDni);
-		dlgEdicion.add(txtDni);
+		dlgEdicion.add(lblMatricula);
+		dlgEdicion.add(lblFecha);
+		dlgEdicion.add(txtFecha);
+		dlgEdicion.add(lblNota);
+		dlgEdicion.add(txtNota);
 		
+
 		dlgEdicion.add(btnAceptar);
 		dlgEdicion.add(btnLimpiar);
-		dlgEdicion.setResizable(false);
+		dlgEdicion.setResizable(true);
 		dlgEdicion.setLocationRelativeTo(null);
 		ventana.setVisible(true);
 
 	}
-	
-	private void rellenarChoiceAlumno()
+	private void rellenarMatricula()
 	{
 		// Conectar a una BD
 		try
@@ -100,15 +100,16 @@ public class Modificacion2 extends WindowAdapter implements ActionListener
 			// Crear la sentencia de consulta o de alta o de baja o de actu...
 			statement = connection.createStatement();
 			// Ejecutar la instrucción SQL
-			rs = statement.executeQuery(sentenciaSQLAlumno);
+			rs = statement.executeQuery(sentenciaSQLMatricula);
 			// Sacar información, meter datos, borrar datos, actualizar
-			choAlumno.add("Seleccionar un alumno...");
+			choMatricula.add("Seleccionar una matricula...");
 			while (rs.next())
 			{
-				choAlumno.add(rs.getInt("idAlumno") +
-						" " + rs.getString("nombreAlumno") +
-						" " + rs.getString("apellidosAlumno")+
-						" " + rs.getString("dniAlumno"));
+				choMatricula.add(rs.getInt("idMatricula")+ 
+						"-"+rs.getString("fechaMatricula")+
+						"-" +rs.getString("notaMatricula")+
+						"-" +rs.getString("idAsignaturaFK")+
+						"-" +rs.getString("idAlumnoFK"));
 			}
 		}
 		catch (ClassNotFoundException cnfe)
@@ -142,12 +143,12 @@ public class Modificacion2 extends WindowAdapter implements ActionListener
 		if (dlgMensaje.isActive())
 		{
 			dlgMensaje.setVisible(false);
-			new Modificacion2();
+			new Modificacion4();
 		}
 		else if (dlgEdicion.isActive())
 		{
 			dlgEdicion.setVisible(false);
-			new Modificacion2();
+			new Modificacion4();
 		}
 		else
 		{
@@ -160,11 +161,12 @@ public class Modificacion2 extends WindowAdapter implements ActionListener
 	{
 		if (evento.getSource().equals(btnEditar))
 		{
-			if (choAlumno.getSelectedIndex() != 0)
+			if (choMatricula.getSelectedIndex() != 0)
 			{
-				idAlumno = choAlumno.getSelectedItem().split(" ")[0];
-				sentenciaSQL = "SELECT * FROM alumnos WHERE idAlumno = " + idAlumno;
-				lblAlumno.setText("# # # Editando el Alumno " + idAlumno + " # # #");
+				idMatricula = choMatricula.getSelectedItem().split("-")[0];
+				sentenciaSQL = "SELECT * FROM matricular WHERE idMatricula = " + idMatricula;
+				System.out.println(sentenciaSQL);
+				lblMatricula.setText("# # # Editando la matricula " + idMatricula + " # # #");
 				// Conectar a una BD
 				try
 				{
@@ -179,10 +181,17 @@ public class Modificacion2 extends WindowAdapter implements ActionListener
 					rs = statement.executeQuery(sentenciaSQL);
 					// Sacar información, meter datos, borrar datos, actualizar
 					rs.next();
-					txtNombre.setText(rs.getString("nombreAlumno"));
-					txtApellidos.setText(rs.getString("apellidosAlumno"));
-					txtDni.setText(rs.getString("dniAlumno"));
-					
+					String fechaBD = rs.getString("fechaMatricula");
+					try {
+						SimpleDateFormat sdfEntrada = new SimpleDateFormat("yyyy-MM-dd");
+						java.util.Date fechaAux = sdfEntrada.parse(fechaBD);
+						
+						SimpleDateFormat sdfSalida = new SimpleDateFormat("dd/MM/yyyy");
+						txtFecha.setText(sdfSalida.format(fechaAux)); // Se muestra formateada al usuario
+					} catch (ParseException pe) {
+						txtFecha.setText(fechaBD);
+				}
+					txtNota.setText(rs.getString("notaMatricula"));
 				}
 				catch (ClassNotFoundException cnfe)
 				{
@@ -190,7 +199,7 @@ public class Modificacion2 extends WindowAdapter implements ActionListener
 				}
 				catch (SQLException se)
 				{
-					System.err.println("Error de conexión: url, usuario o clave");
+					System.err.println("Error de conexión: url, usuario o clave" + se.getMessage());
 				}
 				finally
 				{
@@ -213,14 +222,24 @@ public class Modificacion2 extends WindowAdapter implements ActionListener
 			}
 			else
 			{
-				choAlumno.requestFocus();
+				choMatricula.requestFocus();
 			}
 		}
 		else if (evento.getSource().equals(btnAceptar))
 		{
-			sentenciaSQL = "UPDATE alumnos SET nombreAlumno = '" + txtNombre.getText() + "', apellidosAlumno = '"
-			+ txtApellidos.getText() + "', dniAlumno = '"
-			+ txtDni.getText() + "' WHERE idAlumno = " + idAlumno;
+			String fechaParaBD = "";
+			try {
+				SimpleDateFormat sdfEntrada = new SimpleDateFormat("dd/MM/yyyy");
+				java.util.Date fechaAux = sdfEntrada.parse(txtFecha.getText());
+				
+				SimpleDateFormat sdfSalida = new SimpleDateFormat("yyyy-MM-dd");
+				fechaParaBD = sdfSalida.format(fechaAux);
+			} catch (ParseException pe) {
+				System.err.println("Error: Formato de fecha introducido inválido.");
+				fechaParaBD = txtFecha.getText();
+			}
+			sentenciaSQL = "UPDATE matricular SET fechaMatricula = '" + fechaParaBD + "', notaMatricula = '"
+			+ txtNota.getText() + "' WHERE idMatricula = " + idMatricula;
 			// Conectar a una BD
 			try
 			{
@@ -243,7 +262,7 @@ public class Modificacion2 extends WindowAdapter implements ActionListener
 			}
 			catch (SQLException se)
 			{
-				System.err.println("Error de conexión: url, usuario o clave");
+				System.err.println("Error de conexión: url, usuario o clave" + se.getMessage());
 				lblMensaje.setText("Error en Modificación");
 				dlgMensaje.setVisible(true);
 			}
@@ -267,12 +286,10 @@ public class Modificacion2 extends WindowAdapter implements ActionListener
 		}
 		else if (evento.getSource().equals(btnLimpiar))
 		{
-			txtNombre.setText("");
-			txtApellidos.setText("");
-			txtDni.setText("");
-			txtNombre.requestFocus();
+			txtFecha.setText("");
+			txtNota.setText("");
+			txtFecha.requestFocus();
 		}
 	}
 	
 }
-

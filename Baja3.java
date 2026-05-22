@@ -125,10 +125,6 @@ public class Baja3 extends WindowAdapter implements ActionListener
 			System.out.println("Fin del programa");
 		}
 	}
-	public static void main(String[] args)
-	{
-		new Baja3();
-	}
 	@Override
 	public void windowClosing(WindowEvent e)
 	{
@@ -146,7 +142,7 @@ public class Baja3 extends WindowAdapter implements ActionListener
 		else
 		{
 			// Salir
-			System.exit(0);
+			ventana.setVisible(false);
 		}
 	}
 	@Override
@@ -161,7 +157,6 @@ public class Baja3 extends WindowAdapter implements ActionListener
 				// Mostrar el diálogo de confirmación
 				lblConfirmar.setText("¿Estás segur@ de borrar " + choAsignatura.getSelectedItem() + "?");
 				dlgConfirmar.setVisible(true);
-				ventana.dispose();
 			}
 			else
 			{
@@ -186,6 +181,7 @@ public class Baja3 extends WindowAdapter implements ActionListener
 				sentenciaSQL = "DELETE FROM asignaturas WHERE idAsignatura = "
 						+ choAsignatura.getSelectedItem().split(" ")[0];
 				statement.executeUpdate(sentenciaSQL);
+				FicheroLog.Log("Baja realizada: " + sentenciaSQL);
 				rellenarChoice();
 				// Baja correcta
 				lblMensaje.setText("Baja correcta");

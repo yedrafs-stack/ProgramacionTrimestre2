@@ -17,19 +17,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class Modificacion2 extends WindowAdapter implements ActionListener
+public class Modificacion3 extends WindowAdapter implements ActionListener
 {
 	Frame ventana = new Frame("Modificación");
-	Choice choAlumno = new Choice();
+	Choice choAsignatura = new Choice();
 	Button btnEditar = new Button("Editar");
 	Dialog dlgEdicion = new Dialog(ventana, "Editando...", true);
-	Label lblAlumno = new Label("# # # Editando el Alumno X # # #");
+	Label lblAsignatura = new Label("# # # Editando la asignatura X # # #");
 	Label lblNombre = new Label("Nombre:");
 	TextField txtNombre = new TextField(10);
-	Label lblApellidos = new Label("Apellidos:");
-	TextField txtApellidos = new TextField(10);
-	Label lblDni= new Label("DNI:");
-	TextField txtDni = new TextField(10);	Button btnAceptar = new Button("Aceptar");
+	Label lblDescripcion = new Label("Descripción:");
+	TextField txtDescripcion = new TextField(10);
+	Button btnAceptar = new Button("Aceptar");
 	Button btnLimpiar = new Button("Limpiar");
 	Dialog dlgMensaje = new Dialog(ventana, "Respuesta", true);
 	Label lblMensaje = new Label("Error en Baja");
@@ -37,16 +36,16 @@ public class Modificacion2 extends WindowAdapter implements ActionListener
 	String url = "jdbc:mysql://localhost:3306/programacion2";
 	String usuario = "programacion";
 	String password = "Studium2025#";
-	String sentenciaSQLAlumno = "SELECT * FROM alumnos";
+	String sentenciaSQLAsignatura = "SELECT * FROM asignaturas";
 	String sentenciaSQL = "";
-	String idAlumno = "";
+	String idAsignatura = "";
 	
 	
 	Connection connection = null;
 	Statement statement = null;
 	ResultSet rs = null; // Para los SELECT
-
-	public Modificacion2()
+	
+	public Modificacion3()
 	{
 		ventana.setLayout(new FlowLayout());
 		ventana.setSize(250, 100);
@@ -54,9 +53,9 @@ public class Modificacion2 extends WindowAdapter implements ActionListener
 		btnEditar.addActionListener(this);
 		
 		// Rellenar el Choice
-		rellenarChoiceAlumno();
+		rellenarAsignatura();
 
-		ventana.add(choAlumno);
+		ventana.add(choAsignatura);
 		ventana.add(btnEditar);
 		ventana.setResizable(false);
 		ventana.setLocationRelativeTo(null);
@@ -67,18 +66,17 @@ public class Modificacion2 extends WindowAdapter implements ActionListener
 		dlgMensaje.setLocationRelativeTo(null);
 		dlgMensaje.add(lblMensaje);
 		dlgEdicion.setLayout(new FlowLayout());
-		dlgEdicion.setSize(200, 250);
+		dlgEdicion.setSize(250, 250);
 		dlgEdicion.addWindowListener(this);
 		btnAceptar.addActionListener(this);
 		btnLimpiar.addActionListener(this);
-		dlgEdicion.add(lblAlumno);
+		dlgEdicion.add(lblAsignatura);
 		dlgEdicion.add(lblNombre);
 		dlgEdicion.add(txtNombre);
-		dlgEdicion.add(lblApellidos);
-		dlgEdicion.add(txtApellidos);
-		dlgEdicion.add(lblDni);
-		dlgEdicion.add(txtDni);
+		dlgEdicion.add(lblDescripcion);
+		dlgEdicion.add(txtDescripcion);
 		
+
 		dlgEdicion.add(btnAceptar);
 		dlgEdicion.add(btnLimpiar);
 		dlgEdicion.setResizable(false);
@@ -86,8 +84,7 @@ public class Modificacion2 extends WindowAdapter implements ActionListener
 		ventana.setVisible(true);
 
 	}
-	
-	private void rellenarChoiceAlumno()
+	private void rellenarAsignatura()
 	{
 		// Conectar a una BD
 		try
@@ -100,15 +97,14 @@ public class Modificacion2 extends WindowAdapter implements ActionListener
 			// Crear la sentencia de consulta o de alta o de baja o de actu...
 			statement = connection.createStatement();
 			// Ejecutar la instrucción SQL
-			rs = statement.executeQuery(sentenciaSQLAlumno);
+			rs = statement.executeQuery(sentenciaSQLAsignatura);
 			// Sacar información, meter datos, borrar datos, actualizar
-			choAlumno.add("Seleccionar un alumno...");
+			choAsignatura.add("Seleccionar una Asignatura...");
 			while (rs.next())
 			{
-				choAlumno.add(rs.getInt("idAlumno") +
-						" " + rs.getString("nombreAlumno") +
-						" " + rs.getString("apellidosAlumno")+
-						" " + rs.getString("dniAlumno"));
+				choAsignatura.add(rs.getInt("idAsignatura") +
+						" " + rs.getString("nombreAsignatura") +
+						" " + rs.getString("descripcionAsignatura"));
 			}
 		}
 		catch (ClassNotFoundException cnfe)
@@ -142,12 +138,12 @@ public class Modificacion2 extends WindowAdapter implements ActionListener
 		if (dlgMensaje.isActive())
 		{
 			dlgMensaje.setVisible(false);
-			new Modificacion2();
+			new Modificacion3();
 		}
 		else if (dlgEdicion.isActive())
 		{
 			dlgEdicion.setVisible(false);
-			new Modificacion2();
+			new Modificacion3();
 		}
 		else
 		{
@@ -160,11 +156,11 @@ public class Modificacion2 extends WindowAdapter implements ActionListener
 	{
 		if (evento.getSource().equals(btnEditar))
 		{
-			if (choAlumno.getSelectedIndex() != 0)
+			if (choAsignatura.getSelectedIndex() != 0)
 			{
-				idAlumno = choAlumno.getSelectedItem().split(" ")[0];
-				sentenciaSQL = "SELECT * FROM alumnos WHERE idAlumno = " + idAlumno;
-				lblAlumno.setText("# # # Editando el Alumno " + idAlumno + " # # #");
+				idAsignatura = choAsignatura.getSelectedItem().split(" ")[0];
+				sentenciaSQL = "SELECT * FROM asignaturas WHERE idAsignatura = " + idAsignatura;
+				lblAsignatura.setText("# # # Editando la Asignatura " + idAsignatura + " # # #");
 				// Conectar a una BD
 				try
 				{
@@ -179,9 +175,8 @@ public class Modificacion2 extends WindowAdapter implements ActionListener
 					rs = statement.executeQuery(sentenciaSQL);
 					// Sacar información, meter datos, borrar datos, actualizar
 					rs.next();
-					txtNombre.setText(rs.getString("nombreAlumno"));
-					txtApellidos.setText(rs.getString("apellidosAlumno"));
-					txtDni.setText(rs.getString("dniAlumno"));
+					txtNombre.setText(rs.getString("nombreAsignatura"));
+					txtDescripcion.setText(rs.getString("descripcionAsignatura"));
 					
 				}
 				catch (ClassNotFoundException cnfe)
@@ -209,18 +204,16 @@ public class Modificacion2 extends WindowAdapter implements ActionListener
 					System.out.println("Fin del programa");
 				}
 				dlgEdicion.setVisible(true);
-				ventana.dispose();
 			}
 			else
 			{
-				choAlumno.requestFocus();
+				choAsignatura.requestFocus();
 			}
 		}
 		else if (evento.getSource().equals(btnAceptar))
 		{
-			sentenciaSQL = "UPDATE alumnos SET nombreAlumno = '" + txtNombre.getText() + "', apellidosAlumno = '"
-			+ txtApellidos.getText() + "', dniAlumno = '"
-			+ txtDni.getText() + "' WHERE idAlumno = " + idAlumno;
+			sentenciaSQL = "UPDATE asignaturas SET nombreAsignatura = '" + txtNombre.getText() + "', descripcionAsignatura = '"
+			+ txtDescripcion.getText() + "' WHERE idAsignatura = " + idAsignatura;
 			// Conectar a una BD
 			try
 			{
@@ -268,11 +261,12 @@ public class Modificacion2 extends WindowAdapter implements ActionListener
 		else if (evento.getSource().equals(btnLimpiar))
 		{
 			txtNombre.setText("");
-			txtApellidos.setText("");
-			txtDni.setText("");
+			txtDescripcion.setText("");
 			txtNombre.requestFocus();
 		}
 	}
 	
 }
-
+	
+	
+	

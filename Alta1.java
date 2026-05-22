@@ -69,11 +69,6 @@ public class Alta1 extends WindowAdapter implements ActionListener
 		ventana.setVisible(true);
 
 	}
-	public static void main(String[] args)
-	{
-		new Alta1();
-
-	}
 	@Override
 	public void windowClosing(WindowEvent e)
 	 {
@@ -84,7 +79,7 @@ public class Alta1 extends WindowAdapter implements ActionListener
 		else
 		{
 			// SALIR
-		 System.exit(0);
+			ventana.setVisible(false);
 		}
 	 }
 	@Override
@@ -101,9 +96,9 @@ public class Alta1 extends WindowAdapter implements ActionListener
 				System.out.println("Conexión establecida");
 				//CREAR LA SENTENCIA DE CONSULTA  O DE ALTA O DE BAJA O DE ACTU...
 				statement=connection.createStatement();
-		
 				sentenciaSQL = "INSERT INTO ciclos VALUES(null, '"+txtNom.getText()+"','"+txtDescripcion.getText()+"')";
 				statement.executeUpdate(sentenciaSQL);
+				FicheroLog.Log("Alta realizada: " + sentenciaSQL);
 				lblMensaje.setText("Alta correcta");
 				dlgMensaje.setVisible(true);
 			}

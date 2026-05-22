@@ -86,12 +86,6 @@ public class Programacion2
 	    }
 	    return resultado;
 	}
-	
-	public static void main(String[] args)
-	{
-		// TODO Auto-generated method stub
-
-	}
 
 }
 
